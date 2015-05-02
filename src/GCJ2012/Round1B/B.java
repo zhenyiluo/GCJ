@@ -9,7 +9,7 @@ import java.util.*;
  * Created by Zhenyi Luo on 15-5-1.
  */
 public class B {
-    final static String PROBLEM_NAME = "B-small-practice";
+    final static String PROBLEM_NAME = "B-large-practice";
     final static String WORK_DIR = "/Users/cecilia/Downloads/" + PROBLEM_NAME;
 
     public void solve(Scanner sc, PrintWriter pw) {
@@ -66,6 +66,7 @@ public class B {
                 }
             }
         });
+        Vertex[][] arr = new Vertex[n][m];
 
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
@@ -73,6 +74,7 @@ public class B {
                     Vertex vertex = new Vertex(i, j);
                     vertex.dist = dist[i][j];
                     pq.add(vertex);
+                    arr[i][j] = vertex;
                 }
             }
         }
@@ -82,23 +84,38 @@ public class B {
             int x = vertex.x;
             int y = vertex.y;
             visited[x][y] = true;
+            if(x == m-1 && y == n-1){
+                break;
+            }
             double newH = Math.max(floor[x][y], h - dist[x][y] * 10);
             for(int i = 0; i < 4; i++){
                 int xx = x + dx[i];
                 int yy = y + dy[i];
                 if(!isOutOfRange(xx, yy, n, m) && !visited[xx][yy] && isPossibleToReach(x, y, xx, yy, ceil, floor)){
+                    double tmp;
                     if(canReachRightNow(x, y, xx, yy, ceil, newH, floor)){
-                        dist[xx][yy] = Math.min(dist[xx][yy], dist[x][y]);
+                        double water = newH - floor[x][y];
+                        if(water < 20){
+                            tmp = dist[x][y] + 10;
+                        }else{
+                            tmp = dist[x][y] + 1;
+                        }
                     }else{
                         double diff = newH + 50 - ceil[xx][yy];
                         double timeNeeded = diff / 10;
                         int currentLevel = ceil[xx][yy] - 50;
                         int water = currentLevel - floor[x][y];
                         if(water < 20){
-                            dist[xx][yy] = Math.min(timeNeeded + 10, dist[xx][yy]);
+                            tmp = dist[x][y] + timeNeeded + 10;
                         }else{
-                            dist[xx][yy] = Math.min(timeNeeded + 1, dist[xx][yy]);
+                            tmp = dist[x][y] + timeNeeded + 1;
                         }
+                    }
+                    if(tmp < dist[xx][yy]){
+                        pq.remove(arr[xx][yy]);
+                        arr[xx][yy].dist = tmp;
+                        dist[xx][yy] = tmp;
+                        pq.add(arr[xx][yy]);
                     }
                 }
             }
