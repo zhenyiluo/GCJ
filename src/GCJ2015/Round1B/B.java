@@ -37,9 +37,9 @@ public class B {
                 }
             }
 
-            if( r-2 > 1 && c-2 > 1){
-                int count = (r-2) * (c-2) ;
-            }
+//            if( r-2 > 1 && c-2 > 1){
+//                int count = (r-2) * (c-2) ;
+//            }
 
             if(2 * (r+c) - 4 >= n){
                 ans += (n - bound + 1) * 2;
